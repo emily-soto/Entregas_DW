@@ -1,0 +1,313 @@
+---
+title: "Brief Introduction to R"
+output: rmarkdown::github_document
+---
+
+## Installing Libraries in R
+
+```{r, cache = TRUE, echo = TRUE}
+#install.packages("dplyr")
+#install.packages("RMySQL")
+#install.packages("lubridate")
+#install.packages("openxlsx")
+#install.packages("tidyverse")
+#install.packages("stringr")
+#install.packages("readr")
+```
+
+## Loading Libraries in R
+
+The function `require()` is an equivalent of `library()` only that it outputs a warning and continues if the package is not found.
+
+```{r, cache = TRUE, echo = TRUE, warning = FALSE}
+require(dplyr) 
+require(RMySQL)
+require(lubridate)
+require(openxlsx)
+#require(tidyverse)
+require(stringr)
+require(readr)
+require(ggplot2)
+```
+
+## Help in R - Documentation of every package
+
+```{r, cache = TRUE, echo = TRUE}
+?head
+```
+
+## Get and set the working directory
+```{r, cache = TRUE, echo = TRUE}
+getwd()
+setwd("~/Documents/")
+```
+
+
+## Data types and structures in R
+
+### Strings - Character
+
+```{r, cache = TRUE, echo = TRUE}
+string <- "This is a string"
+string
+class(string)
+length(string)
+nchar(string)
+```
+
+### Double
+
+```{r, cache = TRUE, echo = TRUE}
+number <- 234
+number
+class(number)
+typeof(number)
+
+number <- 234.0
+number
+class(number)
+typeof(number)
+
+number <- 1/8
+number
+class(number)
+typeof(number)
+```
+
+### Integers
+
+```{r, cache = TRUE, echo = TRUE}
+integer <- 2L
+integer
+class(integer)
+```
+
+### Logical
+
+```{r, cache = TRUE, echo = TRUE}
+logical <- FALSE
+logical
+class(logical)
+logical*1
+as.logical(1)
+```
+
+### Complex
+
+```{r, cache = TRUE, echo = TRUE}
+complex <- 1+4i
+complex
+class(complex)
+complex*1
+```
+
+### Factor - Label Encoding
+
+```{r, cache = TRUE, echo = TRUE}
+factor_1 <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Wed", "Thu", "Fri", "Sat", "Sun", "Wed", "Thu", "Wed", "Thu")
+factor_1 <- factor(factor_1)
+factor_1
+levels(factor_1)
+class(factor_1)
+as.numeric(factor_1)
+```
+
+### Ordered Factors - Label Encoding
+
+```{r, cache = TRUE, echo = TRUE}
+factor_2 <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Wed", "Thu", "Fri", "Sat", "Sun", "Wed", "Thu", "Wed", "Thu")
+factor_2 <- ordered(factor_1, levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
+factor_2
+class(factor_2)
+typeof(factor_2)
+as.numeric(factor_2)
+```
+
+## Vectors
+
+The data types we saw earlier are **atomic vectors**. A vector is a dynamic array of a unique data type. Is the most common structure in R. Is the essence in R. Most functions in R are vectorized (input: vector) so that we don't have to perform a cycle.
+
+```{r, cache = TRUE, echo = TRUE}
+#Sample function
+sample(x = 1:100, size = 8, replace = FALSE)
+sample(x = 1:5, size = 8, replace = TRUE)
+
+vector("integer", length = 5)
+
+vector_1 <- 1:5
+vector_1
+vector_1 <- c(1:5)
+vector_1
+vector_1 <- c(1,2,3,4,5)
+vector_1
+class(vector_1)
+
+vector_2 <- c(FALSE, TRUE, FALSE)
+vector_2
+class(vector_2)
+
+vector_3 <- c("a", "b", "c")
+vector_3
+class(vector_3)
+
+vector_4 <- c("a", 1, "v")
+vector_4
+class(vector_4)
+
+#adding vectors
+c(vector_4, "adding", "more", "elements", "to", "vector_4")
+
+vector_log <- c(1,1,0,0,1,0,1)
+as.logical(vector_log)
+```
+
+## Lists
+
+Is a collection of many objects/elements/vectors
+
+```{r, cache = TRUE, echo = TRUE}
+list_1 <- list(vector_1, vector_2, vector_3)
+list_1
+list_1[[2]]
+names(list_1)
+names(list_1) <- c("first", "second", "third")
+list_1
+list_1$first
+```
+
+
+## Matrix
+
+```{r, cache = TRUE, echo = TRUE}
+matrix(data = 1, nrow = 4, ncol = 5)
+
+vector_5 <- c(1:5)
+vector_6 <- c(6:10)
+vector_7 <- c(11:15)
+matrix_1 <- cbind(vector_5, vector_6, vector_7)
+matrix_1
+class(matrix_1)
+```
+
+## Data Frames
+
+```{r, cache = TRUE, echo = TRUE}
+df <- data.frame(
+  col1 = c("This", "is", "a", "vector", "of", "strings"),
+  col2 = 1:6,
+  col3 = letters[1:6],
+  stringsAsFactors = FALSE
+)
+df_copy <- data.frame(
+  col1 = c("This", "is", "a", "vector", "of", "strings"),
+  col2 = 1:6,
+  col3 = letters[1:6]
+)
+df
+str(df)
+names(df)
+names(df) <- c("Column1", "Column2", "Column3")
+names(df)
+colnames(df)
+head(df, 10)
+tail(df, 5)
+nrow(df)
+
+#Adding more elements to data frame
+
+#New Column
+df$Column4 <- 11:16
+
+new_elements <- c("new_string", 19, "z")
+df <- rbind(df, new_elements)
+df_copy <- rbind(df_copy, new_elements)
+df
+df_copy
+
+```
+
+
+### Indexing
+
+```{r, cache = TRUE, echo = TRUE}
+len_4 <- length(vector_4)
+
+vector_4
+len_4
+
+vector_4[1]
+vector_4[2:len_4]
+```
+
+
+```{r, cache = TRUE, echo = TRUE}
+df
+df[1,1]
+df[1,2]
+df[1,]
+df[,1]
+df$col1
+df$col1[3]
+df[,"Column1"]
+```
+
+## Functions of base R
+
+```{r, cache = TRUE, echo = TRUE}
+is.na(df_copy)
+colSums(is.na(df_copy))
+is.na(df_copy$col1)==TRUE
+df_copy[is.na(df_copy$col1),]
+df_copy[is.na(df_copy$col1)==FALSE,]
+
+#loading diamonds dataset
+table(diamonds$cut, diamonds$color)
+```
+
+
+## Defining new functions
+
+```{r, cache = TRUE, echo = TRUE}
+#Vectorized funcion - sum and length are vectorized
+find_mean <- function(x){
+  return(sum(x)/length(x))
+}
+vec <- c(1:10)
+find_mean(vec)
+
+
+find_sample <- function(x){
+  for_index <- sample(1:nrow(x), size = 10, replace = FALSE)
+  new_df <- x[for_index,]
+  return(new_df)
+}
+data <- data.frame(
+  a = 1:10,
+  b = sample(c("GT", "US", "CA"), size = 10, replace = TRUE)
+)
+find_sample(data)
+```
+
+## Apply vs Loop
+```{r, cache = TRUE, echo = TRUE}
+generate_df <- function(x){
+  return(
+    data.frame(
+      a = sample(letters, size = 10, replace = TRUE),
+      b = sample(1:10, size = 10, replace = TRUE)
+    )
+  )
+}
+list_2 <- lapply(1:20100, generate_df)
+
+#First, going through a loop
+print("Results using a loop")
+result_list <- list()
+system.time(for(i in 1:length(list_2)){
+  result_list[[i]] <- find_sample(list_2[[i]])
+})
+
+#Now we are going to use lapply function
+print("Results using apply")
+system.time(lapply(list_2, find_sample))
+```
