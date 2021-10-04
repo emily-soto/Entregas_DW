@@ -1,0 +1,50 @@
+---
+title: "Laboratorio 05"
+author: "EmilySoto"
+date: "6/9/2021"
+output: rmarkdown::github_document
+---
+```{r}
+library(lubridate)
+library(nycflights13)
+library(dplyr)
+library(readxl)
+library(zoo)
+library(stringr)
+library(ggplot2)
+```
+
+
+## Parte 1
+```{r}
+inicio=mdy_hms("August  21, 2017, 18:26:40", tz = "UTC")
+inicio
+synodic=duration(second = 3, minute = 44, hour = 12, day =29)
+synodic
+saros=synodic*223
+saros
+fecha_eclipse=inicio+saros
+fecha_eclipse
+```
+
+## Parte 2
+### Importar y limpiar dataset
+```{r}
+data=read_excel("data.xlsx", col_types = c("text","date", "numeric", "text", "numeric", "numeric", "numeric", "text", "date"))
+data$numero=str_detect(data$`Fecha Creación`, "-")
+data$nuevas=ifelse(data$numero==FALSE, yes=as.Date(as.numeric(data$`Fecha Creación`)), no=dmy(data$`Fecha Creación`))
+data$nuevas=as.Date(data$nuevas)
+data$mes=format(data$nuevas, "%m")
+data$dia=weekdays(data$nuevas)
+```
+
+#### Pregunta 1
+1.	¿En qué meses existe una mayor cantidad de llamadas por código?
+```{r}
+llamadasxmes=data %>%filter(Call==1) %>% group_by(mes, Cod) %>%
+    summarize(llamadas = n())
+llamadasxmes=llamadasxmes[order(llamadasxmes$llamadas, decreasing = T),]
+llamadasxmes
+ggplot(data=llamadasxmes)+geom_bar(aes(x=mes, y=llamadas),fill='blue', stat="identity") 
+
+```
